@@ -58,7 +58,7 @@ const App = () => {
     const [bad, setBad] = useState(0)
     const [all, setAll] = useState(0)
 
-    const AddValue = (value, setValue) => {
+    const addValue = (value, setValue) => {
         setAll(all + 1)
         setValue(value + 1)
     }
@@ -66,9 +66,9 @@ const App = () => {
     return (
         <div>
             <Header text="give feedback" />
-            <Button handleClick={() => AddValue(good, setGood)} text="good" />
-            <Button handleClick={() => AddValue(neutral, setNeutral)} text="neutral" />
-            <Button handleClick={() => AddValue(bad, setBad)} text="bad" />
+            <Button handleClick={() => addValue(good, setGood)} text="good" />
+            <Button handleClick={() => addValue(neutral, setNeutral)} text="neutral" />
+            <Button handleClick={() => addValue(bad, setBad)} text="bad" />
 
             <Header text="statistics" />
             <Statistics good={good} neutral={neutral} bad={bad} all={all} />
