@@ -9,6 +9,26 @@ const Button = (props) => {
     )
 }
 
+const TopAnecdote = (props) => {
+    const anecdotes = props.anecdotes
+    const votes = [...props.votes]
+
+    let topVotes = 0
+    let topIndex = 0
+
+    for (let i = 0; i < votes.length; i++) {
+        if (votes[i] > topVotes) {
+            topVotes = votes[i]
+            topIndex = i
+        }
+    }
+
+    if (topVotes > 0)
+        return anecdotes[topIndex]
+    else
+        return "waiting for input"
+}
+
 const App = (props) => {
     const [selected, setSelected] = useState(0)
     const [votes, setVotes] = useState(new Array(10).fill(0))
@@ -23,20 +43,24 @@ const App = (props) => {
 
     const vote = () => {
         console.log("clicked vote")
-        const newVotes = votes
+        const newVotes = [...votes]
         newVotes[selected] = newVotes[selected] + 1
-        setVotes(newVotes)
+        return newVotes
     }
 
-// Voting needs debugging
-// Changing votes doesn't call new render
+    // Voting needs debugging
+    // Changing votes doesn't call new render
 
     return (
         <div>
+            <h1>Anecdote of the day</h1>
             {props.anecdotes[selected]} <br />
             has {votes[selected]} votes <br />
-            <Button text="vote" handleClick={() => vote()} />            
+            <Button text="vote" handleClick={() => setVotes(vote())} />
             <Button text="next anecdote" handleClick={() => setSelected(randomIndex())} />
+
+            <h1>Anecdote with most votes</h1>
+            <TopAnecdote anecdotes={anecdotes} votes={votes} />
         </div>
     )
 }
