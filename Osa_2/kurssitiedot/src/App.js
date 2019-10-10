@@ -2,7 +2,8 @@ import React from 'react'
 import Course from './components/Course'
 
 const App = () => {
-    const course = {
+  const courses = [
+    {
       name: 'Half Stack application development',
       parts: [
         {
@@ -26,13 +27,31 @@ const App = () => {
           id: 4
         }
       ]
+    },
+    {
+      name: 'Node.js',
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
     }
-  
-    return (
-      <div>
-        <Course course={course} />
-      </div>
-    )
-  }
+  ]
+
+  const print = () => courses.map(c => <Course course={c} />)
+
+  return (
+    <div>
+      {print()}
+    </div>
+  )
+}
 
 export default App
