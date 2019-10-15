@@ -7,12 +7,14 @@ const Filter = (props) => {
         countries,
         searchPhrase,
         setSearchPhrase,
-        setFiltered
+        setFiltered,
+        setShown
     } = props
 
     const handlePhraseChange = (event) => {
         const phrase = event.target.value
         setSearchPhrase(phrase)
+        setShown(null)
 
         const hits = [...countries].filter(p =>
             p.name.toLowerCase()
