@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 import NewContactForm from './components/NewContactForm'
 import Contacts from './components/Contacts'
 import Filter from './components/Filter'
@@ -12,14 +12,19 @@ const App = () => {
   const [searchHits, setSearchHits] = useState([])
 
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('resolved')
-        setPersons(response.data)
+    personService.getAll()
+      .then(persons => {
+        setPersons(persons)
       })
   }, [])
+
+  const postPerson = newPerson => {
+    personService.post(newPerson)
+      .then(response => setPersons(persons.concat(response)))
+
+    setNewName('')
+    setNewNumber('')
+  }
 
   return (
     <div>
@@ -38,10 +43,12 @@ const App = () => {
         setNewName={setNewName}
         newNumber={newNumber}
         setNewNumber={setNewNumber}
+        postPerson={postPerson}
       />
 
       <Contacts
         persons={persons}
+        setPersons={setPersons}
         searchName={searchName}
         searchHits={searchHits}
       />
