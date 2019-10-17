@@ -3,6 +3,7 @@ import personService from './services/persons'
 import NewContactForm from './components/NewContactForm'
 import Contacts from './components/Contacts'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +11,18 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
   const [searchHits, setSearchHits] = useState([])
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
+
+  const showMessage = (msg, type) => {
+    setMessage(msg)
+    setMessageType(type)
+
+    setTimeout(() => {
+      setMessage(null)
+      setMessageType(null)
+    }, 3000)
+  }
 
   useEffect(() => {
     personService.getAll()
@@ -20,15 +33,40 @@ const App = () => {
 
   const postPerson = newPerson => {
     personService.post(newPerson)
-      .then(response => setPersons(persons.concat(response)))
+      .then(added => {
+        setPersons(persons.concat(added))
+        showMessage(`Added ${added.name}`, 'confirm')
+      })
 
     setNewName('')
     setNewNumber('')
   }
 
+  const deletePerson = id => {
+    const deleted = persons.find(p => p.id === id)
+    personService.remove(id)
+      .then(response => {
+        showMessage(`Deleted ${deleted.name}`, 'confirm')
+        const newPersons = persons.filter(p => p.id !== id)
+        setPersons(newPersons)
+      })
+      .catch(error => {
+        console.log(error)
+        showMessage(`Error: ${deleted.name} has already been removed from server`, 'error')
+      })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification
+        message={message}
+        setMessage={setMessage}
+        messageType={messageType}
+        setMessageType={setMessageType}
+      />
+
       <Filter
         persons={persons}
         searchName={searchName}
@@ -44,6 +82,7 @@ const App = () => {
         newNumber={newNumber}
         setNewNumber={setNewNumber}
         postPerson={postPerson}
+        showMessage={showMessage}
       />
 
       <Contacts
@@ -51,6 +90,8 @@ const App = () => {
         setPersons={setPersons}
         searchName={searchName}
         searchHits={searchHits}
+        showMessage={showMessage}
+        deletePerson={deletePerson}
       />
     </div>
   )

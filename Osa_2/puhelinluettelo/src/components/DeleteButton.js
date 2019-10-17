@@ -1,8 +1,7 @@
 import React from 'react'
-import personService from '../services/persons'
 
 const DeleteButton = (props) => {
-    const { id, persons, setPersons } = props
+    const { id, persons, deletePerson } = props
 
     const handleDeletePerson = event => {
         console.log(`attempting to delete ${id}`)
@@ -10,22 +9,17 @@ const DeleteButton = (props) => {
         const name = persons.find(p => p.id === id).name
         const confirm = window.confirm(`Delete ${name} ?`)
 
-        if (confirm)
-            personService.remove(id)
-                .then(response => {
-                    console.log(response)
-                    const newPersons = persons.filter(p => p.id !== id)
-                    console.log(newPersons)
-                    setPersons(newPersons)
-                })
+        if (confirm) {
+            deletePerson(id)
+        }
     }
 
     return (
-        <div>
+        <>
             <button onClick={handleDeletePerson}>
                 delete
             </button>
-        </div>
+        </>
     )
 }
 

@@ -9,7 +9,8 @@ const NewContactForm = (props) => {
         setNewName,
         newNumber,
         setNewNumber,
-        postPerson
+        postPerson,
+        showMessage
     } = props
 
     const handleNameChange = (event) => {
@@ -24,14 +25,21 @@ const NewContactForm = (props) => {
         const replace = window.confirm(
             `${newName} is already added to phonebook, replace the old number with a new one?`)
 
-        if (!replace)
+        if (!replace) {
+            showMessage('Canceled', 'error')
             return
+        }
 
         personService.update(overlap.id, personObject)
             .then(response => {
                 console.log(response)
                 const filtered = persons.filter(p => p.name !== response.data.name)
                 setPersons(filtered.concat(response.data))
+                showMessage(`Updated ${response.data.name}`, 'confirm')
+            })
+            .catch(response => {
+                console.log(response)
+                showMessage('Service unavailable', 'error')
             })
 
         setNewName('')
@@ -63,19 +71,32 @@ const NewContactForm = (props) => {
         <div>
             <h2>add a new</h2>
             <form onSubmit={addPerson}>
-                <div>
-                    name: <input
-                        value={newName}
-                        onChange={handleNameChange} />
-                </div>
-                <div>
-                    number: <input
-                        value={newNumber}
-                        onChange={handleNumberChange} />
-                </div>
-                <div>
-                    <button type="submit" >add</button>
-                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                name:
+                        </td>
+                            <td>
+                                <input
+                                    value={newName}
+                                    onChange={handleNameChange} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                number:
+                        </td>
+                            <td>
+                                <input
+                                    value={newNumber}
+                                    onChange={handleNumberChange} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <button type="submit" >add</button>
             </form>
         </div>
 
